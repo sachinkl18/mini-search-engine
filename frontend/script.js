@@ -1,0 +1,115 @@
+/**
+ * script.js
+ * ---------
+ * Handles:
+ *  - Switching between the "landing" view and the "results" view
+ *  - Calling the backend /api/search endpoint
+ *  - Rendering results into the DOM
+ *
+ * IMPORTANT: Update API_BASE_URL after you deploy your backend
+ * (Render/Railway/Hugging Face). For local testing it points at
+ * your local Flask server.
+ */
+
+// 👇 CHANGE THIS after deploying your backend (see README deployment steps)
+const API_BASE_URL = "http://localhost:5000";
+
+// --- Grab DOM elements ---
+const centerWrapper = document.getElementById("centerWrapper");
+const resultsPage = document.getElementById("resultsPage");
+const resultsContainer = document.getElementById("resultsContainer");
+const resultsMeta = document.getElementById("resultsMeta");
+
+const searchInput = document.getElementById("searchInput");       // homepage input
+const searchInputTop = document.getElementById("searchInputTop"); // results-page input
+const searchButton = document.getElementById("searchButton");
+
+/**
+ * Performs a search by calling the backend API and rendering results.
+ * @param {string} query - the search query text
+ */
+async function performSearch(query) {
+  query = query.trim();
+  if (!query) return;
+
+  // Switch to "results" view
+  centerWrapper.style.display = "none";
+  resultsPage.style.display = "block";
+  searchInputTop.value = query;
+
+  // Show a loading state while we wait for the API
+  resultsMeta.textContent = "Searching...";
+  resultsContainer.innerHTML = `<div class="loading">Loading results...</div>`;
+
+  try {
+    const url = `${API_BASE_URL}/api/search?q=${encodeURIComponent(query)}`;
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Server responded with status ${response.status}`);
+    }
+
+    const data = await response.json();
+    renderResults(data);
+
+  } catch (err) {
+    console.error("Search failed:", err);
+    resultsMeta.textContent = "";
+    resultsContainer.innerHTML = `
+      <div class="error-msg">
+        ⚠️ Couldn't reach the search backend. Make sure it's running
+        and that API_BASE_URL in script.js is correct.<br>
+        (${err.message})
+      </div>`;
+  }
+}
+
+/**
+ * Renders the JSON response from the API into result cards.
+ * @param {{query: string, count: number, results: Array}} data
+ */
+function renderResults(data) {
+  resultsMeta.textContent = `${data.count} result${data.count === 1 ? "" : "s"} for "${data.query}"`;
+
+  if (!data.results || data.results.length === 0) {
+    resultsContainer.innerHTML = `<div class="no-results">No results found. Try a different search term.</div>`;
+    return;
+  }
+
+  resultsContainer.innerHTML = data.results.map(buildResultCardHTML).join("");
+}
+
+/**
+ * Builds the HTML string for a single result card.
+ * @param {{url: string, title: string, snippet: string, score: number}} result
+ */
+function buildResultCardHTML(result) {
+  // Basic HTML-escaping so page content can't break our markup
+  const escape = (str) =>
+    String(str).replace(/[&<>"']/g, (c) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[c]));
+
+  return `
+    <div class="result-item">
+      <div class="result-url">${escape(result.url)}</div>
+      <a class="result-title" href="${escape(result.url)}" target="_blank" rel="noopener noreferrer">
+        ${escape(result.title)}
+      </a>
+      <div class="result-snippet">${escape(result.snippet)}...</div>
+      <div class="result-score">relevance score: ${result.score}</div>
+    </div>
+  `;
+}
+
+// --- Event listeners ---
+
+searchButton.addEventListener("click", () => performSearch(searchInput.value));
+
+searchInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") performSearch(searchInput.value);
+});
+
+searchInputTop.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") performSearch(searchInputTop.value);
+});
