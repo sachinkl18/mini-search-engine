@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MiniSearch</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Centered logo + search box, shown before any search (Google-style) -->
+  <div class="center-wrapper" id="centerWrapper">
+    <h1 class="logo">Mini<span class="logo-accent">Search</span></h1>
+
+    <div class="search-box">
+      <svg class="search-icon" viewBox="0 0 24 24" width="20" height="20">
+        <path fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.7.7l.27.28v.79l5 5L20.49 19l-5-5zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14z"/>
+      </svg>
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search the index..."
+        autocomplete="off"
+      />
+    </div>
+
+    <button id="searchButton" class="search-button">Search</button>
+    <p class="hint">Try: "web crawler", "search engine", "information retrieval"</p>
+  </div>
+
+  <!-- Header bar + results, shown after a search is performed -->
+  <div class="results-page" id="resultsPage">
+    <header class="results-header">
+      <h1 class="logo small" id="logoSmall">Mini<span class="logo-accent">Search</span></h1>
+      <div class="search-box small">
+        <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18">
+          <path fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.7.7l.27.28v.79l5 5L20.49 19l-5-5zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14z"/>
+        </svg>
+        <input type="text" id="searchInputTop" autocomplete="off" />
+      </div>
+    </header>
+
+    <div class="results-meta" id="resultsMeta"></div>
+    <div class="results-container" id="resultsContainer"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
