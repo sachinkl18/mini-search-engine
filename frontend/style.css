@@ -1,0 +1,199 @@
+/* ---------- Base reset & theme ---------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --text-color: #202124;
+  --muted-color: #5f6368;
+  --border-color: #dfe1e5;
+  --accent-blue: #4285f4;
+  --accent-red: #ea4335;
+  --accent-yellow: #fbbc05;
+  --accent-green: #34a853;
+  --link-color: #1a0dab;
+  --bg-color: #ffffff;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text-color);
+  background: var(--bg-color);
+}
+
+/* ---------- Logo ---------- */
+.logo {
+  font-size: 64px;
+  font-weight: 600;
+  letter-spacing: -1px;
+  color: var(--text-color);
+}
+
+.logo.small {
+  font-size: 28px;
+  white-space: nowrap;
+}
+
+.logo-accent {
+  color: var(--accent-blue);
+}
+
+/* ---------- Centered landing view (Google-style homepage) ---------- */
+.center-wrapper {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 0 20px;
+}
+
+/* ---------- Search box ---------- */
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 580px;
+  padding: 12px 20px;
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.search-box:hover,
+.search-box:focus-within {
+  box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+  border-color: rgba(223, 225, 229, 0);
+}
+
+.search-box input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: var(--text-color);
+}
+
+.search-icon {
+  color: var(--muted-color);
+  flex-shrink: 0;
+}
+
+/* ---------- Search button ---------- */
+.search-button {
+  padding: 10px 20px;
+  background: #f8f9fa;
+  border: 1px solid #f8f9fa;
+  border-radius: 4px;
+  font-size: 14px;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.search-button:hover {
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  border-color: var(--border-color);
+}
+
+.hint {
+  font-size: 13px;
+  color: var(--muted-color);
+}
+
+/* ---------- Results page (hidden until a search happens) ---------- */
+.results-page {
+  display: none; /* toggled to "block" via JS */
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0 24px 40px;
+}
+
+.results-header {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.search-box.small {
+  max-width: 500px;
+  padding: 8px 16px;
+}
+
+.search-box.small input {
+  font-size: 15px;
+}
+
+.results-meta {
+  font-size: 13px;
+  color: var(--muted-color);
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #ebebeb;
+}
+
+/* ---------- Individual result card ---------- */
+.result-item {
+  margin-bottom: 28px;
+  max-width: 600px;
+}
+
+.result-url {
+  font-size: 13px;
+  color: #006621;
+  margin-bottom: 2px;
+}
+
+.result-title {
+  font-size: 20px;
+  color: var(--link-color);
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 4px;
+}
+
+.result-title:hover {
+  text-decoration: underline;
+}
+
+.result-snippet {
+  font-size: 14px;
+  color: var(--text-color);
+  line-height: 1.55;
+}
+
+.result-score {
+  font-size: 11px;
+  color: var(--muted-color);
+  margin-top: 4px;
+}
+
+/* ---------- States ---------- */
+.no-results, .loading, .error-msg {
+  color: var(--muted-color);
+  font-size: 15px;
+  padding: 20px 0;
+}
+
+.error-msg {
+  color: var(--accent-red);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 480px) {
+  .logo {
+    font-size: 44px;
+  }
+  .results-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+}
