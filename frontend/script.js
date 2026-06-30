@@ -1,43 +1,32 @@
 /**
  * script.js
  * ---------
- * Handles:
- *  - Switching between the "landing" view and the "results" view
- *  - Calling the backend /api/search endpoint
- *  - Rendering results into the DOM
+ * Handles switching views, calling the search API, and rendering results.
  *
- * IMPORTANT: Update API_BASE_URL after you deploy your backend
- * (Render/Railway/Hugging Face). For local testing it points at
- * your local Flask server.
+ * NOTE: Because the frontend and backend are deployed together on
+ * the SAME Vercel domain, we use a relative path ("") instead of a
+ * full URL.
  */
 
-// 👇 CHANGE THIS after deploying your backend (see README deployment steps)
-const API_BASE_URL = "http://localhost:5000";
+const API_BASE_URL = ""; // same-domain deployment — leave this empty
 
-// --- Grab DOM elements ---
 const centerWrapper = document.getElementById("centerWrapper");
 const resultsPage = document.getElementById("resultsPage");
 const resultsContainer = document.getElementById("resultsContainer");
 const resultsMeta = document.getElementById("resultsMeta");
 
-const searchInput = document.getElementById("searchInput");       // homepage input
-const searchInputTop = document.getElementById("searchInputTop"); // results-page input
+const searchInput = document.getElementById("searchInput");
+const searchInputTop = document.getElementById("searchInputTop");
 const searchButton = document.getElementById("searchButton");
 
-/**
- * Performs a search by calling the backend API and rendering results.
- * @param {string} query - the search query text
- */
 async function performSearch(query) {
   query = query.trim();
   if (!query) return;
 
-  // Switch to "results" view
   centerWrapper.style.display = "none";
   resultsPage.style.display = "block";
   searchInputTop.value = query;
 
-  // Show a loading state while we wait for the API
   resultsMeta.textContent = "Searching...";
   resultsContainer.innerHTML = `<div class="loading">Loading results...</div>`;
 
@@ -57,17 +46,11 @@ async function performSearch(query) {
     resultsMeta.textContent = "";
     resultsContainer.innerHTML = `
       <div class="error-msg">
-        ⚠️ Couldn't reach the search backend. Make sure it's running
-        and that API_BASE_URL in script.js is correct.<br>
-        (${err.message})
+        ⚠️ Couldn't reach the search backend. (${err.message})
       </div>`;
   }
 }
 
-/**
- * Renders the JSON response from the API into result cards.
- * @param {{query: string, count: number, results: Array}} data
- */
 function renderResults(data) {
   resultsMeta.textContent = `${data.count} result${data.count === 1 ? "" : "s"} for "${data.query}"`;
 
@@ -79,12 +62,7 @@ function renderResults(data) {
   resultsContainer.innerHTML = data.results.map(buildResultCardHTML).join("");
 }
 
-/**
- * Builds the HTML string for a single result card.
- * @param {{url: string, title: string, snippet: string, score: number}} result
- */
 function buildResultCardHTML(result) {
-  // Basic HTML-escaping so page content can't break our markup
   const escape = (str) =>
     String(str).replace(/[&<>"']/g, (c) => ({
       "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
@@ -101,8 +79,6 @@ function buildResultCardHTML(result) {
     </div>
   `;
 }
-
-// --- Event listeners ---
 
 searchButton.addEventListener("click", () => performSearch(searchInput.value));
 
