@@ -1,0 +1,38 @@
+name: Build Search Index
+
+on:
+  workflow_dispatch:   # lets you trigger this manually from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  build-index:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r backend/requirements.txt
+
+      - name: Run crawler
+        working-directory: backend
+        run: python crawler.py
+
+      - name: Run indexer
+        working-directory: backend
+        run: python indexer.py
+
+      - name: Commit and push index.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add backend/data/index.json
+          git diff --staged --quiet || git commit -m "Auto-build search index"
+          git push
